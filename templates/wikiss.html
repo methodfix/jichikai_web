@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>{PAGE_TITLE_HEAD  - }{WIKI_TITLE}</title>
+	<link rel="stylesheet" href="style.css" type="text/css"/>
+	{HEAD}
+</head>
+<body>
+<ul id="pages">
+	<li><a href="$url">Home</a></li>
+	<li><a>Members</a></li>
+	<li><a>Infomations</a></li>
+	<li><a>Schedule</a></li>
+	<li><a>Contact us</a></li>
+</ul>
+<table border="0" width="100%" cellpadding="4" cellspacing="0" style="border:1px solid #11141A;">
+	<tr>
+		<th colspan="3">
+			<h1 id="page-title">{PAGE_TITLE} {<span class="pageVersionsList">( plugin:VERSIONS_LIST )</span>}</h1>
+			<p>{LAST_CHANGED_TEXT :} {LAST_CHANGED}&nbsp;</p>
+		</th>
+	</tr>
+	<tr id="headerLinks">
+		<td class="pageLinks" colspan="2">
+			{HOME} / {RECENT_CHANGES}
+		</td>
+		<td class="pageLinks" align="right">
+			{EDIT} {/  SYNTAX} {/  HISTORY}
+		</td>
+	</tr>
+	<tr>
+		<td id="mainContent" colspan="3">
+			<div class="error">{ERROR}</div>
+			{CONTENT}
+			{plugin:TAG_LIST}
+			{CONTENT_FORM}
+			{RENAME_TEXT}
+			{RENAME_INPUT}
+			{CONTENT_TEXTAREA}
+			<p style="float:right;margin:6px">{FORM_PASSWORD} {FORM_PASSWORD_INPUT} {plugin:CAPTCHA_QUESTION} {plugin:CAPTCHA_INPUT} {EDIT_SUMMARY_TEXT} {EDIT_SUMMARY_INPUT} {CONTENT_SUBMIT} {CONTENT_PREVIEW}</p>
+			{/CONTENT_FORM}
+		</td>
+	</tr>
+	<tr id="footerLinks">
+		<td class="pageLinks">
+			<div>{SEARCH_FORM}{SEARCH_INPUT}{SEARCH_SUBMIT}{/SEARCH_FORM}</div>
+		</td>
+		<td class="pageLinks">
+			Powered by <a href="http://lionwiki.0o.cz/">LionWiki</a>
+			<br />
+			{COOKIE}
+		</td>
+		<td class="pageLinks" align="right">{EDIT} {/  SYNTAX} {/  HISTORY}</td>
+	</tr>
+</table>
+</body>
+</html>

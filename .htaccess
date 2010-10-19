@@ -1,0 +1,10 @@
+<IfModule mod_rewrite.c>
+RewriteBase /lionwiki
+RewriteEngine On
+RewriteCond %{REQUEST_URI} !^/lionwiki/index.php
+RewriteCond %{REQUEST_URI} !^/lionwiki/src
+RewriteCond %{REQUEST_URI} !^/lionwiki/plugins
+RewriteCond %{REQUEST_URI} !^/lionwiki/?page=
+
+RewriteRule ^(.+)$ /lionwiki/index.php?page=$1
+</IfModule>
