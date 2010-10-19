@@ -1,8 +1,9 @@
 <?php // LionWiki 3.2.4, (c) Adam Zivner, licensed under GNU/GPL v2
+require"plugins/HatenaSyntax.php";
 foreach($_REQUEST as $k => $v)
 	unset($$k); // register_globals = off
 
-$START_PAGE = 'Main page'; // Which page should be default (start page)?
+$START_PAGE = 'MainPage'; // Which page should be default (start page)?
 $SYNTAX_PAGE = 'http://lionwiki.0o.cz/?page=Syntax+reference';
 
 $DATE_FORMAT = 'Y/m/d H:i';
@@ -29,7 +30,7 @@ $LANG_DIR = 'lang/';
 @include('config.php'); // config file is not required, see settings above
 
 // default translation
-$T_HOME = 'Main page';
+$T_HOME = 'MainPage';
 $T_SYNTAX = 'Syntax';
 $T_DONE = 'Save changes';
 $T_DISCARD_CHANGES = 'Discard changes';
@@ -343,9 +344,13 @@ if(!$action || $preview) { // page parsing
 
 		$CON = str_replace($m[0], '<span'.($id ? " id=\"$id\"" : '').($class ? " class=\"$class\"" : '').($m[3] ? " style=\"$m[3]\"" : '').'>', $CON);
 	}
-
+	
+	
+	$hs = new HatenaSyntax(); //convert hatena syntax
 	$CON = str_replace('{/}', '</span>', $CON);
-
+	
+	$CON=$hs->parse("$CON");
+/*
 	plugin('formatBegin');
 
 	$CON = strtr($CON, array('&lt;-->' => '&harr;', '-->' => '&rarr;', '&lt;--' => '&larr;', "(c)" => '&copy;', "(r)" => '&reg;'));
@@ -430,16 +435,19 @@ if(!$action || $preview) { // page parsing
 	$CON = preg_replace("/'''(.*)'''/Um", '<strong>$1</strong>', $CON); // bold
 	$CON = preg_replace("/''(.*)''/Um", '<em>$1</em>', $CON); // italic
 	$CON = str_replace('{br}', '<br style="clear:both"/>', $CON); // new line
-	$CON = preg_replace('/-----*/', '<hr/>', $CON); // horizontal line
+	*/
+	//$CON = preg_replace('/-----*/', '<hr/>', $CON); // horizontal line
+	/*
 	$CON = str_replace('--', '&mdash;', $CON); // --
 
 	$CON = preg_replace(array_fill(0, count($codes[1]) + 1, '/{CODE}/'), $codes[1], $CON, 1); // put HTML and "normal" codes back
 	$CON = preg_replace(array_fill(0, count($htmlcodes[1]) + 1, '/{HTML}/'), $htmlcodes[1], $CON, 1);
 
 	plugin('formatEnd');
+*/
 }
 
-plugin('formatFinished');
+//plugin('formatFinished');
 
 // Loading template. If does not exist, use built-in default
 $html = file_exists($TEMPLATE) ? file_get_contents(clear_path($TEMPLATE)) : fallback_template();
@@ -457,10 +465,10 @@ $html = preg_replace('/\{([^}]* )?plugin:.+( [^}]*)?\}/U', '', $html); // get ri
 //this part is setting on Template Tag
 $tpl_subs = array(
 	
-	'HOME_URL' =>$self.'?page='.u($START_PAGE),
-	'INFO_URL' =>$self.'?page=infomation',
-	'MEMBER_URL' =>$self.'?page=members',
-	'CONTACT_URL'=>$self.'?page=contact_us',
+	'HOME_URL' =>u($START_PAGE),
+	'INFO_URL' =>'infomation',
+	'MEMBER_URL' =>'members',
+	'CONTACT_URL'=>'contact_us',
 	
 	'HEAD' => $HEAD . ($action ? '<meta name="robots" content="noindex, nofollow"/>' : ''),
 	'SEARCH_FORM' => '<form action="'.$self.'" method="get"><span><input type="hidden" name="action" value="search"/><input type="submit" style="display:none;"/>',
@@ -626,44 +634,3 @@ function plugin($method) {
 
 	return $ret; // returns true if treated by a plugin
 }
-
-function fallback_template() { return '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-	<meta http-equiv="content-type" content="text/html;charset=utf-8"/>
-	<title>{PAGE_TITLE_HEAD  - }{WIKI_TITLE}</title>
-	<link rel="stylesheet" href="style.css" type="text/css"/>
-	{HEAD}
-</head>
-<body>
-<ul id="pages">
-	<li><a href="$url">Home</a></li>
-	<li><a>Members</a></li>
-	<li><a>Infomations</a></li>
-	<li><a>Schedule</a></li>
-	<li><a>Contact us</a></li>
-</ul>
-<table width="100%" cellpadding="4">
-<tr>
-	<td colspan="2">{HOME} {RECENT_CHANGES}</td>
-	<td style="text-align:right">{EDIT} {SYNTAX} {HISTORY}</td>
-</tr>
-<tr><th colspan="3"><hr/><h1 id="page-title">{PAGE_TITLE} {<span class="pageVersionsList">( plugin:VERSIONS_LIST )</span>}</h1></th></tr>
-<tr>
-	<td colspan="3">
-		{<div style="color:#F25A5A;font-weight:bold;"> ERROR </div>}
-		{CONTENT} {plugin:TAG_LIST}
-		{CONTENT_FORM} {RENAME_TEXT} {RENAME_INPUT <br/><br/>} {CONTENT_TEXTAREA}
-		<p style="float:right;margin:6px">{FORM_PASSWORD} {FORM_PASSWORD_INPUT} {plugin:CAPTCHA_QUESTION} {plugin:CAPTCHA_INPUT}
-		{EDIT_SUMMARY_TEXT} {EDIT_SUMMARY_INPUT} {CONTENT_SUBMIT} {CONTENT_PREVIEW}</p>{/CONTENT_FORM}
-	</td>
-</tr>
-<tr><td colspan="3"><hr/></td></tr>
-<tr>
-	<td><div>{SEARCH_FORM}{SEARCH_INPUT}{SEARCH_SUBMIT}{/SEARCH_FORM}</div></td>
-	<td>Powered by <a href="http://lionwiki.0o.cz/">LionWiki</a>. {LAST_CHANGED_TEXT}: {LAST_CHANGED} {COOKIE}</td>
-	<td style="text-align:right">{EDIT} {SYNTAX} {HISTORY}</td>
-</tr>
-</table>
-</body>
-</html>'; }

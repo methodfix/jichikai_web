@@ -10,27 +10,21 @@
 </head>
 <body>
 <div id="wrapper">
-<h1 id="page-title">{PAGE_TITLE} {<span class="pageVersionsList">( plugin:VERSIONS_LIST )</span>}</h1>
-<ul id="pages">
-	<li><a href="{HOME_URL}">Home</a></li>
-	<li><a href="{MEMBER_URL}">Members</a></li>
-	<li><a href="{INFO_URL}">Infomations</a></li>
-	<li><a href="{CONTACT_URL}">Contact us</a></li>
-</ul>
-
-	<div id="header">
-		<div align="right">{HOME} {&nbsp;&nbsp; RECENT_CHANGES}</div>
-	</div>
+<h1 id="page-title"><a href="{HOME_URL}">{WIKI_TITLE}</a></h1>
+<div id="header">
+	<ul id="pages">
+		<li><a href="{HOME_URL}">Home</a></li>
+		<li><a href="{MEMBER_URL}">Members</a></li>
+		<li><a href="{INFO_URL}">Infomations</a></li>
+		<li><a href="{CONTACT_URL}">Contact us</a></li>
+	</ul>
+</div>
 	<div id="content">
 		{<div class="error"> ERROR </div>}
 		{CONTENT}
 		{plugin:TAG_LIST}
 		{CONTENT_FORM}
 		<table style="width: 100%;">
-			<tr>
-				<td>{RENAME_TEXT }{RENAME_INPUT }{plugin:TOOLBAR_TEXTAREA}</td>
-				<td colspan="2" style="text-align: right;" nowrap="nowrap">{SHOW_PAGE  &nbsp; }{SYNTAX}</td>
-			</tr>
 			<tr>
 				<td colspan="3">{CONTENT_TEXTAREA}</td>
 			</tr>
@@ -47,7 +41,7 @@
 		<div style="float:left;">
 		 Powered by <a href="http://lionwiki.0o.cz/">LionWiki</a>
 		</div>
-		<div style="float:right;padding:7px;">{EDIT} {&nbsp;&nbsp; HISTORY}</div>
+		<div style="float:right;padding:7px;">{EDIT}</div>
 	</div>
 </div>
 </body>
