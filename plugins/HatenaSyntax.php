@@ -457,9 +457,9 @@ class HatenaSyntax_Head implements HatenaSyntax_FirstCharSyntaxInterface
     $base = $this->baseLevel;
     $level = $this->countLevel($line);
     
-    $this->result .= '<h' . ($base + $level - 1) . '>' 
+    $this->result .= '<h' . ($base + $level-2) . '>' 
                   . substr($line, $level) 
-                  . '</h' . ($base + $level - 1) . '>' 
+                  . '</h' . ($base + $level-2) . '>' 
                   . PHP_EOL;
   }
   /**

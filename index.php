@@ -1,5 +1,5 @@
 <?php // LionWiki 3.2.4, (c) Adam Zivner, licensed under GNU/GPL v2
-require"plugins/HatenaSyntax.php";
+//require"plugins/HatenaSyntax.php";
 foreach($_REQUEST as $k => $v)
 	unset($$k); // register_globals = off
 
@@ -488,7 +488,7 @@ $tpl_subs = array(
 	'LAST_CHANGED' => $last_changed_ts ? date($DATE_FORMAT, $last_changed_ts + $LOCAL_HOUR * 3600) : "",
 	'CONTENT' => $action != "edit" ? $CON : "",
 	'TOC' => $TOC,
-	'SYNTAX' => $action == "edit" || $preview ? "<a href=\"$SYNTAX_PAGE\">$T_SYNTAX</a>" : "",
+	'SYNTAX' => $action == "edit" || $preview ? "<a href='javascript:void(0);' onClick='Show_Syntax()'>syntax</a>" : "",
 	'SHOW_PAGE' => $action == "edit" || $preview ? "<a href=\"$self?page=".u($page)."\">$T_SHOW_PAGE</a>" : "",
 	'COOKIE' => '<a href="'.$self.'?page='.u($page).'&amp;action='.u($action).'&amp;erasecookie=1">'.$T_ERASE_COOKIE.'</a>',
 	'CONTENT_FORM' => $CON_FORM_BEGIN,

@@ -1,0 +1,3 @@
+/*
+Functions to use on Some Pages exist Editor Page.
+*/
