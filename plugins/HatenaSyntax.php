@@ -129,6 +129,9 @@ class HatenaSyntax
     return $result;
   }
   public function parse($contents) {
+  	
+  	$contents=preg_replace("/\[image:([a-zA-Z0-9]*\.[a-zA-Z]{2,4})\]/","<img src='img/$1' />" ,$contents);
+  	
     $structure = $this->parseStructure($contents);
     $result = array();
     $htmlEscape = $this->getOption('htmlescape');
@@ -566,3 +569,5 @@ class HatenaSyntax_Default implements HatenaSyntax_FirstCharSyntaxInterface
     return $result;
   }
 }
+
+?>

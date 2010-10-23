@@ -16,4 +16,5 @@ $NO_HTML = false; // XSS protection
 //original configs
 $Off_Plugins=array("Comments","");
 $_chkpluginoff=false;
-$Home_URL="?Main page";
+$Home_URL="MainPage";
+

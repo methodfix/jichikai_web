@@ -1,5 +1,5 @@
 <?php // LionWiki 3.2.4, (c) Adam Zivner, licensed under GNU/GPL v2
-//require"plugins/HatenaSyntax.php";
+require("/plugins/HatenaSyntax.php");
 foreach($_REQUEST as $k => $v)
 	unset($$k); // register_globals = off
 
@@ -31,7 +31,7 @@ $LANG_DIR = 'lang/';
 
 // default translation
 $T_HOME = 'MainPage';
-$T_SYNTAX = 'Syntax';
+$T_SYNTAX = '記法について';
 $T_DONE = 'Save changes';
 $T_DISCARD_CHANGES = 'Discard changes';
 $T_PREVIEW = 'Preview';
@@ -45,7 +45,7 @@ $T_RESTORE = 'Restore';
 $T_REV_DIFF = '<b>Difference between revisions from {REVISION1} and {REVISION2}.</b>';
 $T_REVISION = "'''This revision is from {TIME}. You can {RESTORE} it.'''\n\n";
 $T_PASSWORD = 'Password';
-$T_EDIT = 'Edit';
+$T_EDIT = '編集する';
 $T_EDIT_SUMMARY = 'Summary of changes';
 $T_EDIT_CONFLICT = 'Edit conflict: somebody saved this page after you started editing. See last {DIFF} before saving your changes.';
 $T_SHOW_SOURCE = 'Show source';
@@ -461,7 +461,7 @@ while(preg_match('/{include:([^}]+)}/U', $html, $m)) {
 plugin('template'); // plugin templating
 
 $html = preg_replace('/\{([^}]* )?plugin:.+( [^}]*)?\}/U', '', $html); // get rid of absent plugin tags
-
+$hs_ex=new HatenaSyntax();
 //this part is setting on Template Tag
 $tpl_subs = array(
 	
@@ -469,7 +469,8 @@ $tpl_subs = array(
 	'INFO_URL' =>'infomation',
 	'MEMBER_URL' =>'members',
 	'CONTACT_URL'=>'contact_us',
-	
+	'SYNTAX_EXPLAIN'=>$action == "edit" || $preview ?preg_replace("/\!--/","<hr />",$hs_ex->parse(file_get_contents("syntax_explain.txt"))):"",
+	'TOOLBAR'=>$action == "edit" || $preview ?file_get_contents("plugins/toolbar.html"):"",	
 	'HEAD' => $HEAD . ($action ? '<meta name="robots" content="noindex, nofollow"/>' : ''),
 	'SEARCH_FORM' => '<form action="'.$self.'" method="get"><span><input type="hidden" name="action" value="search"/><input type="submit" style="display:none;"/>',
 	'\/SEARCH_FORM' => "</span></form>",
@@ -488,7 +489,7 @@ $tpl_subs = array(
 	'LAST_CHANGED' => $last_changed_ts ? date($DATE_FORMAT, $last_changed_ts + $LOCAL_HOUR * 3600) : "",
 	'CONTENT' => $action != "edit" ? $CON : "",
 	'TOC' => $TOC,
-	'SYNTAX' => $action == "edit" || $preview ? "<a href='javascript:void(0);' onClick='Show_Syntax()'>syntax</a>" : "",
+	'SYNTAX' => $action == "edit" || $preview ? "<a href='javascript:void(0);' onClick='Show_Syntax(this)'>▼記法について</a>" : "",
 	'SHOW_PAGE' => $action == "edit" || $preview ? "<a href=\"$self?page=".u($page)."\">$T_SHOW_PAGE</a>" : "",
 	'COOKIE' => '<a href="'.$self.'?page='.u($page).'&amp;action='.u($action).'&amp;erasecookie=1">'.$T_ERASE_COOKIE.'</a>',
 	'CONTENT_FORM' => $CON_FORM_BEGIN,
