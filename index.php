@@ -1,5 +1,5 @@
 <?php // LionWiki 3.2.4, (c) Adam Zivner, licensed under GNU/GPL v2
-require("/plugins/HatenaSyntax.php");
+	//require("/plugins/HatenaSyntax.php");
 foreach($_REQUEST as $k => $v)
 	unset($$k); // register_globals = off
 
@@ -27,7 +27,25 @@ $PLUGINS_DIR = 'plugins/';
 $PLUGINS_DATA_DIR = $VAR_DIR.'plugins/';
 $LANG_DIR = 'lang/';
 
-@include('config.php'); // config file is not required, see settings above
+//@include('config.php'); // config file is not required, see settings above
+
+$WIKI_TITLE = 'Saikyo High School Students Concil on the Web'; // name of the site
+
+// SHA1 hash of password. If empty (or commented out), no password is required
+//$PASSWORD = sha1("saitomasahiro");
+
+$TEMPLATE = 'jichikai_web.html'; // presentation template
+
+// if true, you need to fill password for reading pages too
+
+$NO_HTML = false; // XSS protection
+
+
+//original configs
+$Off_Plugins=array("Comments","");
+$_chkpluginoff=false;
+$Home_URL="MainPage";
+
 
 // default translation
 $T_HOME = 'MainPage';
@@ -65,7 +83,6 @@ if($_GET['lang']) {
 else
 	list($LANG) = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
 
-if((@include("$LANG_DIR$LANG.php")) === false && (@include($LANG_DIR . substr($LANG, 0, 2) . '.php')) === false)
 	$LANG = 'en';
 
 // Creating essential directories if they don't exist
@@ -99,6 +116,7 @@ for($plugins = array(), $dir = @opendir($PLUGINS_DIR); $dir && $f = readdir($dir
 			foreach($$m[1] as $name => $value)
 				$plugins[$m[1]]->$name = $value;
 	}
+
 
 plugin('pluginsLoaded');
 
@@ -452,6 +470,8 @@ if(!$action || $preview) { // page parsing
 // Loading template. If does not exist, use built-in default
 $html = file_exists($TEMPLATE) ? file_get_contents(clear_path($TEMPLATE)) : fallback_template();
 
+
+
 // including pages in pure HTML
 while(preg_match('/{include:([^}]+)}/U', $html, $m)) {
 	$inc = str_replace(array('{html}', '{/html}'), '', @file_get_contents("$PG_DIR$m[1].txt"));
@@ -469,7 +489,7 @@ $tpl_subs = array(
 	'INFO_URL' =>'infomation',
 	'MEMBER_URL' =>'members',
 	'CONTACT_URL'=>'contact_us',
-	'SYNTAX_EXPLAIN'=>$action == "edit" || $preview ?preg_replace("/\!--/","<hr />",$hs_ex->parse(file_get_contents("syntax_explain.txt"))):"",
+	'SYNTAX_EXPLAIN'=>$action == "edit" || $preview ?preg_replace("/\!--/","<br /><a href='#syntax_explain'>▲先頭に戻る</a><hr />",$hs_ex->parse(file_get_contents("syntax_explain.txt"))):"",
 	'TOOLBAR'=>$action == "edit" || $preview ?file_get_contents("plugins/toolbar.html"):"",	
 	'HEAD' => $HEAD . ($action ? '<meta name="robots" content="noindex, nofollow"/>' : ''),
 	'SEARCH_FORM' => '<form action="'.$self.'" method="get"><span><input type="hidden" name="action" value="search"/><input type="submit" style="display:none;"/>',
@@ -504,6 +524,7 @@ $tpl_subs = array(
 	'FORM_PASSWORD' => $FORM_PASSWORD,
 	'FORM_PASSWORD_INPUT' => $FORM_PASSWORD_INPUT
 );
+
 
 foreach($tpl_subs as $tpl => $rpl) // substituting values
 	$html = template_replace($tpl, $rpl, $html);
