@@ -21,28 +21,28 @@ class HatenaSyntax{
 		$text=substr($l,$n,-1);
 		$this->$currentlinetext=$text;
 		if($linenumber==0){
-			//Å‰‚Ìs‚Ìê‡@but ‚Ù‚Æ‚ñ‚Ç‚ÌƒP[ƒX‚Ítitle‹L–@‚Ì‚Í‚¸‚È‚Ì‚ÅƒeƒXƒg—p
+			//æœ€åˆã®è¡Œã®å ´åˆã€€but ã»ã¨ã‚“ã©ã®ã‚±ãƒ¼ã‚¹ã¯titleè¨˜æ³•ã®ã¯ãšãªã®ã§ãƒ†ã‚¹ãƒˆç”¨
 			$this->$currentlistTag=str_repeat("<".$tag.">",$n)."\n"."<li>";
 		}elseif($tag===$this->$lastTagFlag){
-			//‘O‚Ì—ñ‚Æ“¯‚¶ƒ^ƒO‚Ìí—Ş‚Ìê‡
+			//å‰ã®åˆ—ã¨åŒã˜ã‚¿ã‚°ã®ç¨®é¡ã®å ´åˆ
 			if($n==$this->$lastTagFlagNum){
-				//‘O‚Ì—ñ‚Æ“¯‚¶ƒŒƒxƒ‹‚Ìê‡
+				//å‰ã®åˆ—ã¨åŒã˜ãƒ¬ãƒ™ãƒ«ã®å ´åˆ
 				$this->$currentlistTag="<li>";
 			}elseif($n>$this->$lastTagFlagNum){
-				//‘O‚Ì—ñ‚æ‚è‚‚¢ƒŒƒxƒ‹‚Ìê‡
+				//å‰ã®åˆ—ã‚ˆã‚Šé«˜ã„ãƒ¬ãƒ™ãƒ«ã®å ´åˆ
 				$diff=$n-$this->$lastTagFlagNum;
 				$this->$currentlistTag=str_repeat("<".$tag.">",$diff)."\n"."<li>";
 			}elseif($n<$this->$lastTagFlagNum){
-				//‘O‚Ì—ñ‚æ‚è’á‚¢ƒŒƒxƒ‹‚Ìê‡
+				//å‰ã®åˆ—ã‚ˆã‚Šä½ã„ãƒ¬ãƒ™ãƒ«ã®å ´åˆ
 				$diff=$this->$lastTagFlagNum-$n;
 				$this->$currentlistTag=str_repeat("</".$tag.">",$diff)."\n"."<li>";
 			}
 		}else{
-			//‘O‚Ì—ñ‚Æˆá‚¤ƒ^ƒO‚Ìê‡
-			//‚Ü‚¸‘O‚Ìƒ^ƒO‚ğ•Â‚¶‚é
+			//å‰ã®åˆ—ã¨é•ã†ã‚¿ã‚°ã®å ´åˆ
+			//ã¾ãšå‰ã®ã‚¿ã‚°ã‚’é–‰ã˜ã‚‹
 			$cn=intval($this->$lastTagFlagNum);
 			$closetag=str_repeat("</".$this->$lastTagFlag.">",$cn)."\n";
-			//‚»‚ê‚©‚çV‚½‚Èƒ^ƒO‚ğ•t‚¯‚é
+			//ãã‚Œã‹ã‚‰æ–°ãŸãªã‚¿ã‚°ã‚’ä»˜ã‘ã‚‹
 			$this->$currentlistTag=$closetag.str_repeat("<".$tag.">",$n)."\n"."<li>";
 		}
 		$this->$lastTagFlag=$tag;
@@ -54,23 +54,23 @@ class HatenaSyntax{
 		for($i=0;$i<count($lines);$i++){
 			$l=$lines[$i];
 			//$this->$currentline=$l;
-			//s“ª‚ÉƒL[ƒ[ƒh‚ª‚ ‚é‚©‚ğƒ`ƒFƒbƒN
+			//è¡Œé ­ã«ã‚­ãƒ¼ãƒ¯ãƒ¼ãƒ‰ãŒã‚ã‚‹ã‹ã‚’ãƒã‚§ãƒƒã‚¯
 			if(preg_match("/^[\+-]/",$this->$currentline)){
-				//list‹L–@
+				//listè¨˜æ³•
 				echo$this->currentline;
 				$this->liSyntax($i);
 			}elseif(preg_match("/^[\*]/",$this->$currentline)){
-				//ƒ^ƒCƒgƒ‹‹L–@
+				//ã‚¿ã‚¤ãƒˆãƒ«è¨˜æ³•
 				//$this->titleSyntax();
 			}
-			//blockŒn‚Ì‹L–@‚Ì–Úˆó‚ğƒ`ƒFƒbƒN
+			//blockç³»ã®è¨˜æ³•ã®ç›®å°ã‚’ãƒã‚§ãƒƒã‚¯
 			elseif(preg_match("/^[\*]/",$this->$currentline)){
-				//pre‹L–@
+				//preè¨˜æ³•
 				
 			}
-			//‚»‚êˆÈŠO‚Ì‹L–@ ex)http‹L–@ image‹L–@
+			//ãã‚Œä»¥å¤–ã®è¨˜æ³• ex)httpè¨˜æ³• imageè¨˜æ³•
 			
-			//s‚ğŒ‹‡‚·‚é
+			//è¡Œã‚’çµåˆã™ã‚‹
 			
 		}//end for
 		//echo $this->$result;
