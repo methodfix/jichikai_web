@@ -1,5 +1,6 @@
 <?php // LionWiki 3.2.4, (c) Adam Zivner, licensed under GNU/GPL v2
-	//require("/plugins/HatenaSyntax.php");
+	//require("plugins/HatenaSyntax_for_php4.php");
+	require("plugins/original_HatenaSyntax.php");
 foreach($_REQUEST as $k => $v)
 	unset($$k); // register_globals = off
 
@@ -27,26 +28,7 @@ $PLUGINS_DIR = 'plugins/';
 $PLUGINS_DATA_DIR = $VAR_DIR.'plugins/';
 $LANG_DIR = 'lang/';
 
-//@include('config.php'); // config file is not required, see settings above
-
-$WIKI_TITLE = 'Saikyo High School Students Concil on the Web'; // name of the site
-
-// SHA1 hash of password. If empty (or commented out), no password is required
-//$PASSWORD = sha1("saitomasahiro");
-
-$TEMPLATE = 'jichikai_web.html'; // presentation template
-
-// if true, you need to fill password for reading pages too
-
-$NO_HTML = false; // XSS protection
-
-
-//original configs
-$Off_Plugins=array("Comments","");
-$_chkpluginoff=false;
-$Home_URL="MainPage";
-
-
+@include('config.php'); // config file is not required, see settings above
 // default translation
 $T_HOME = 'MainPage';
 $T_SYNTAX = '記法について';
@@ -86,11 +68,13 @@ else
 	$LANG = 'en';
 
 // Creating essential directories if they don't exist
+/*
 if(!file_exists($VAR_DIR) && !mkdir(rtrim($VAR_DIR, "/")))
 	die("Can't create directory $VAR_DIR. Please create $VAR_DIR with 0777 rights.");
 else foreach(array($PG_DIR, $HIST_DIR, $PLUGINS_DATA_DIR) as $DIR)
 	if(@mkdir(rtrim($DIR, '/'), 0777)) {
 		$f = fopen($DIR . ".htaccess", "w"); fwrite($f, "deny from all"); fclose($f); }
+*/
 
 if($_GET['erasecookie']) // remove cookie without reloading
 	foreach($_COOKIE as $k => $v)
@@ -98,10 +82,11 @@ if($_GET['erasecookie']) // remove cookie without reloading
 			setcookie($k);
 			unset($_COOKIE[$k]);
 		}
-
 for($plugins = array(), $dir = @opendir($PLUGINS_DIR); $dir && $f = readdir($dir);) // load plugins
+	$f = readdir($dir);
 	if(preg_match('/wkp_(.+)\.php$/', $f, $m) > 0) {
 		//check plugin is off?
+		/*
 		foreach($Off_Plugins as $_pluginname){
 			if($_chkpluginoff || $f=="wkp_".$_pluginname.".php"){
 				$_chkpluginoff=true;
@@ -109,15 +94,17 @@ for($plugins = array(), $dir = @opendir($PLUGINS_DIR); $dir && $f = readdir($dir
 			}
 		}
 		if($_chkpluginoff){continue;}
+		*/
 		require $PLUGINS_DIR . $f;
 		$plugins[$m[1]] = new $m[1]();
-
-		if(isset($$m[1]))
-			foreach($$m[1] as $name => $value)
+		if(isset($m[1])){
+			foreach($m[1] as $name => $value){
 				$plugins[$m[1]]->$name = $value;
+			}
+		}
 	}
-
-
+	//echo"aa";
+//here is end of loading plugins
 plugin('pluginsLoaded');
 
 foreach(array('action', 'content', 'error', 'esum', 'f1', 'f2', 'last_changed', 'moveto', 'page', 'par', 'preview', 'query', 'restore', 'sc', 'showsource', 'time') as $req)
@@ -284,7 +271,7 @@ if($action == 'edit' || $preview) {
 				$files[] = substr($f, 0, -4);
 
 	sort($files);
-
+	
 	foreach($files as $f)
 		$list .= "<li><a href=\"$self?page=".u($f).'&amp;redirect=no">'.h($f)."</a></li>";
 
@@ -362,12 +349,13 @@ if(!$action || $preview) { // page parsing
 
 		$CON = str_replace($m[0], '<span'.($id ? " id=\"$id\"" : '').($class ? " class=\"$class\"" : '').($m[3] ? " style=\"$m[3]\"" : '').'>', $CON);
 	}
+
 	
 	
-	$hs = new HatenaSyntax(); //convert hatena syntax
+	$hs=new HatenaSyntax(); //convert hatena syntax class
 	$CON = str_replace('{/}', '</span>', $CON);
+	$CON=$hs->ConvertHatenaSyntax("$CON");
 	
-	$CON=$hs->parse("$CON");
 /*
 	plugin('formatBegin');
 
@@ -485,11 +473,11 @@ $hs_ex=new HatenaSyntax();
 //this part is setting on Template Tag
 $tpl_subs = array(
 	
-	'HOME_URL' =>u($START_PAGE),
-	'INFO_URL' =>'infomation',
-	'MEMBER_URL' =>'members',
-	'CONTACT_URL'=>'contact_us',
-	'SYNTAX_EXPLAIN'=>$action == "edit" || $preview ?preg_replace("/\!--/","<br /><a href='#syntax_explain'>▲先頭に戻る</a><hr />",$hs_ex->parse(file_get_contents("syntax_explain.txt"))):"",
+	'HOME_URL' =>"?page=".u($START_PAGE),
+	'INFO_URL' =>'?page=infomation',
+	'MEMBER_URL' =>'?page=members',
+	'CONTACT_URL'=>'?page=contact_us',
+	'SYNTAX_EXPLAIN'=>$action == "edit" || $preview ?preg_replace("/\!--/","<br /><a href='#syntax_explain'>▲先頭に戻る</a><hr />",$hs_ex->ConvertHatenaSyntax(file_get_contents("syntax_explain.txt"))):"",
 	'TOOLBAR'=>$action == "edit" || $preview ?file_get_contents("plugins/toolbar.html"):"",	
 	'HEAD' => $HEAD . ($action ? '<meta name="robots" content="noindex, nofollow"/>' : ''),
 	'SEARCH_FORM' => '<form action="'.$self.'" method="get"><span><input type="hidden" name="action" value="search"/><input type="submit" style="display:none;"/>',
@@ -528,7 +516,6 @@ $tpl_subs = array(
 
 foreach($tpl_subs as $tpl => $rpl) // substituting values
 	$html = template_replace($tpl, $rpl, $html);
-
 header('Content-type: text/html; charset=UTF-8');
 die($html);
 
@@ -653,6 +640,5 @@ function plugin($method) {
 
 	foreach($GLOBALS['plugins'] as $idx => $plugin)
 		$ret |= method_exists($GLOBALS['plugins'][$idx], $method) && call_user_func_array(array(&$GLOBALS['plugins'][$idx], $method), $args);
-
 	return $ret; // returns true if treated by a plugin
 }
